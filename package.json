@@ -1,0 +1,27 @@
+{
+  "name": "fkcoding-note",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "wrangler pages dev public --d1=DB",
+    "db:init:local": "wrangler d1 execute fkcoding-note-db --local --file=./migrations/0001_init.sql",
+    "db:init:prod": "wrangler d1 execute fkcoding-note-db --remote --file=./migrations/0001_init.sql",
+    "db:seed:local": "wrangler d1 execute fkcoding-note-db --local --file=./migrations/0002_seed.sql"
+  },
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Justdoitfor/fkcoding_notebook.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Justdoitfor/fkcoding_notebook/issues"
+  },
+  "homepage": "https://github.com/Justdoitfor/fkcoding_notebook#readme",
+  "devDependencies": {
+    "wrangler": "^4.84.1"
+  }
+}
