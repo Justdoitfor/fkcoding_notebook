@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fkcoding-note — UI Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F5F4F0;
+  --surface: #FFFFFF;
+  --surface2: #FAFAF8;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
+  --ink: #1C1B18;
+  --ink2: #5A5950;
+  --ink3: #A8A69E;
+  --accent: #2563EB;
+  --accent-bg: #EEF4FF;
+  --accent-hover: #1D4ED8;
+  --green: #16A34A;
+  --green-bg: #DCFCE7;
+  --amber: #B45309;
+  --amber-bg: #FEF3C7;
+  --red: #DC2626;
+  --red-bg: #FEE2E2;
+  --purple: #7C3AED;
+  --purple-bg: #EDE9FE;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  transition: width 0.2s;
+}
+.sidebar-logo {
+  padding: 18px 16px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--ink);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500; color: white;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.logo-text { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
+.logo-text span { color: var(--accent); }
+
+.sidebar-section { padding: 14px 10px 0; }
+.sidebar-label {
+  font-size: 10px; font-weight: 600; color: var(--ink3);
+  letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 0 6px; margin-bottom: 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 8px; border-radius: var(--r-md);
+  font-size: 13px; color: var(--ink2);
+  cursor: pointer; margin-bottom: 1px;
+  transition: all 0.12s; user-select: none;
+  position: relative;
+}
+.nav-item:hover { background: var(--bg); color: var(--ink); }
+.nav-item.active { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+.nav-icon {
+  width: 16px; height: 16px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.nav-badge {
+  margin-left: auto; background: var(--accent); color: white;
+  font-size: 10px; font-weight: 600; padding: 1px 6px;
+  border-radius: 20px; min-width: 18px; text-align: center;
+}
+.nav-badge.amber { background: var(--amber); }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid var(--border);
+}
+.user-pill {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: var(--r-md);
+  background: var(--bg); cursor: pointer;
+}
+.user-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: white; flex-shrink: 0;
+}
+.user-name { font-size: 12px; font-weight: 500; color: var(--ink); }
+.user-plan { font-size: 10px; color: var(--ink3); }
+
+/* ===== MAIN ===== */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--ink2);
+}
+.breadcrumb b { color: var(--ink); font-weight: 500; }
+.breadcrumb-sep { color: var(--ink3); }
+
+.search-box {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg); border: 1px solid var(--border2);
+  border-radius: var(--r-md); padding: 6px 12px;
+  cursor: text; transition: border-color 0.15s;
+}
+.search-box:focus-within { border-color: var(--accent); }
+.search-box input {
+  border: none; background: none; outline: none;
+  font-family: inherit; font-size: 12px; color: var(--ink);
+  width: 180px;
+}
+.search-box input::placeholder { color: var(--ink3); }
+
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+.btn {
+  font-family: inherit; font-size: 12px; font-weight: 500;
+  padding: 6px 14px; border-radius: var(--r-md);
+  cursor: pointer; border: 1px solid var(--border2);
+  background: white; color: var(--ink2);
+  transition: all 0.12s; display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg); color: var(--ink); }
+.btn-primary {
+  background: var(--ink); color: white; border-color: var(--ink);
+}
+.btn-primary:hover { background: #2d2c28; }
+.btn-accent {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.btn-accent:hover { background: var(--accent-hover); }
+
+/* ===== PAGE CONTENT ===== */
+.page { flex: 1; overflow-y: auto; padding: 20px; display: none; }
+.page.active { display: block; }
+
+/* ===== DASHBOARD ===== */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+.stat-label { font-size: 11px; font-weight: 500; color: var(--ink3); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+.stat-num { font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 4px; letter-spacing: -1px; }
+.stat-sub { font-size: 11px; color: var(--ink3); }
+.stat-trend { font-size: 11px; font-weight: 500; color: var(--green); }
+
+.two-col { display: grid; grid-template-columns: 1fr 320px; gap: 16px; }
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-title { font-size: 13px; font-weight: 600; color: var(--ink); }
+.card-action { font-size: 11px; color: var(--accent); cursor: pointer; }
+.card-action:hover { text-decoration: underline; }
+
+/* Tutorial list */
+.tut-list { display: flex; flex-direction: column; gap: 1px; }
+.tut-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 8px; border-radius: var(--r-md);
+  cursor: pointer; transition: background 0.1s;
+}
+.tut-row:hover { background: var(--bg); }
+.tut-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.tut-info { flex: 1; min-width: 0; }
+.tut-name { font-size: 13px; font-weight: 500; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tut-meta { font-size: 11px; color: var(--ink3); }
+.tut-badge {
+  font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; flex-shrink: 0;
+}
+.badge-blue { background: var(--accent-bg); color: var(--accent); }
+.badge-green { background: var(--green-bg); color: var(--green); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); }
+.badge-purple { background: var(--purple-bg); color: var(--purple); }
+.badge-gray { background: var(--bg); color: var(--ink2); }
+
+/* Activity heatmap */
+.heatmap { display: grid; grid-template-columns: repeat(18, 1fr); gap: 3px; }
+.hm-cell {
+  aspect-ratio: 1; border-radius: 3px; cursor: pointer;
+  transition: transform 0.1s; background: #EEF0EC;
+}
+.hm-cell:hover { transform: scale(1.3); }
+.hm-cell.l1 { background: #BBF7D0; }
+.hm-cell.l2 { background: #4ADE80; }
+.hm-cell.l3 { background: #16A34A; }
+.hm-cell.l4 { background: #166534; }
+
+/* Progress rings */
+.rings { display: flex; flex-direction: column; gap: 10px; }
+.ring-row { display: flex; align-items: center; gap: 10px; }
+.ring-label { font-size: 12px; color: var(--ink2); width: 60px; flex-shrink: 0; }
+.ring-bar-bg { flex: 1; height: 6px; background: var(--bg); border-radius: 3px; overflow: hidden; }
+.ring-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.ring-count { font-size: 11px; color: var(--ink3); width: 40px; text-align: right; flex-shrink: 0; }
+
+/* ===== EDITOR PAGE ===== */
+.editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; height: calc(100vh - 52px); overflow: hidden; }
+.editor-panel {
+  display: flex; flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+.editor-toolbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 8px 14px; display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+}
+.tb-btn {
+  padding: 4px 8px; border-radius: var(--r-sm);
+  border: none; background: none; cursor: pointer;
+  font-size: 12px; color: var(--ink2); font-family: inherit;
+  transition: background 0.1s; display: flex; align-items: center; gap: 4px;
+}
+.tb-btn:hover { background: var(--bg); color: var(--ink); }
+.tb-sep { width: 1px; height: 16px; background: var(--border2); margin: 0 4px; }
+.editor-textarea {
+  flex: 1; resize: none; border: none; outline: none;
+  padding: 20px 22px; font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; line-height: 1.8; color: var(--ink);
+  background: #FEFEFE; overflow-y: auto;
+}
+.preview-panel {
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.preview-header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 8px 16px; font-size: 11px; font-weight: 600;
+  color: var(--ink3); letter-spacing: 0.6px; text-transform: uppercase; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.preview-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+.md-preview h1 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 12px; color: var(--ink); }
+.md-preview h2 { font-size: 17px; font-weight: 600; margin: 20px 0 8px; color: var(--ink); padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.md-preview h3 { font-size: 14px; font-weight: 600; margin: 16px 0 6px; color: var(--ink); }
+.md-preview p { margin-bottom: 12px; color: var(--ink2); line-height: 1.8; font-size: 14px; }
+.md-preview code {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--purple);
+}
+.md-preview pre {
+  background: #1E1E2E; border-radius: var(--r-md);
+  padding: 14px 16px; margin: 12px 0; overflow-x: auto; position: relative;
+}
+.md-preview pre code {
+  background: none; color: #CDD6F4; font-size: 12.5px; padding: 0;
+  line-height: 1.7; display: block;
+}
+.code-lang {
+  position: absolute; top: 8px; right: 10px;
+  font-size: 10px; color: #585B70; font-family: 'JetBrains Mono', monospace;
+}
+.code-copy-btn {
+  position: absolute; top: 6px; right: 50px;
+  font-size: 10px; color: #585B70; cursor: pointer; padding: 2px 6px;
+  border-radius: 4px; border: 1px solid #313244; background: none;
+  font-family: inherit; transition: all 0.1s;
+}
+.code-copy-btn:hover { background: #313244; color: #CDD6F4; }
+.md-preview blockquote {
+  border-left: 3px solid var(--accent); padding: 8px 14px;
+  background: var(--accent-bg); border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  margin: 12px 0; color: var(--ink2); font-size: 13px;
+}
+.md-preview ul, .md-preview ol { padding-left: 20px; margin-bottom: 12px; color: var(--ink2); }
+.md-preview li { margin-bottom: 4px; font-size: 14px; }
+.md-preview strong { color: var(--ink); font-weight: 600; }
+.md-preview .callout {
+  border-radius: var(--r-md); padding: 12px 14px; margin: 12px 0;
+  border: 1px solid; font-size: 13px;
+}
+.callout-tip { background: var(--green-bg); border-color: #86EFAC; color: #166534; }
+.callout-warn { background: var(--amber-bg); border-color: #FCD34D; color: #92400E; }
+.md-preview table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+.md-preview th { background: var(--bg); padding: 8px 12px; text-align: left; font-weight: 500; border: 1px solid var(--border2); }
+.md-preview td { padding: 7px 12px; border: 1px solid var(--border); color: var(--ink2); }
+.md-preview hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+.toc-sidebar {
+  width: 200px; flex-shrink: 0; background: var(--surface2);
+  border-left: 1px solid var(--border); padding: 20px 14px; overflow-y: auto;
+}
+.toc-title { font-size: 10px; font-weight: 600; color: var(--ink3); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+.toc-item {
+  font-size: 12px; color: var(--ink2); padding: 4px 8px; cursor: pointer;
+  border-radius: var(--r-sm); margin-bottom: 1px; transition: all 0.1s; line-height: 1.4;
+}
+.toc-item:hover { background: var(--bg); color: var(--ink); }
+.toc-item.active { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+.toc-item.h2 { padding-left: 8px; }
+.toc-item.h3 { padding-left: 18px; font-size: 11px; }
+
+/* ===== TUTORIALS PAGE ===== */
+.filter-bar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+.filter-tabs { display: flex; gap: 4px; background: var(--surface); border: 1px solid var(--border); padding: 3px; border-radius: var(--r-md); }
+.filter-tab {
+  padding: 5px 12px; border-radius: var(--r-sm); font-size: 12px;
+  cursor: pointer; color: var(--ink2); transition: all 0.1s; font-family: inherit; border: none; background: none;
+}
+.filter-tab.active { background: var(--ink); color: white; }
+.tut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.tut-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 16px 18px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow);
+}
+.tut-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.tut-card-icon { font-size: 22px; margin-bottom: 10px; }
+.tut-card-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
+.tut-card-desc { font-size: 12px; color: var(--ink3); line-height: 1.6; margin-bottom: 12px; }
+.tut-card-footer { display: flex; align-items: center; justify-content: space-between; }
+.tut-card-stats { font-size: 11px; color: var(--ink3); display: flex; gap: 10px; }
+.tut-progress { height: 3px; background: var(--bg); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.tut-progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s; }
+
+/* ===== STATS PAGE ===== */
+.stats-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.chart-bars { display: flex; align-items: flex-end; gap: 6px; height: 100px; padding-top: 8px; }
+.chart-bar {
+  flex: 1; border-radius: 4px 4px 0 0; background: var(--accent-bg);
+  transition: height 0.4s ease; cursor: pointer; position: relative;
+}
+.chart-bar:hover { background: var(--accent); }
+.chart-bar-label { font-size: 9px; color: var(--ink3); text-align: center; margin-top: 4px; }
+.chart-bar-val {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; color: var(--ink2); white-space: nowrap; opacity: 0;
+  transition: opacity 0.1s;
+}
+.chart-bar:hover .chart-bar-val { opacity: 1; }
+.tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-pill {
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all 0.1s; border: 1px solid transparent;
+}
+.tag-pill:hover { border-color: var(--border2); }
+
+/* ===== TOAST ===== */
+.toast-container { position: fixed; top: 16px; right: 16px; z-index: 9999; display: flex; flex-direction: column; gap: 6px; }
+.toast {
+  background: var(--ink); color: white; padding: 10px 16px; border-radius: var(--r-md);
+  font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 8px;
+  box-shadow: var(--shadow-md); transform: translateX(120%); transition: transform 0.25s ease;
+  max-width: 280px;
+}
+.toast.show { transform: translateX(0); }
+.toast.success { background: #166534; }
+.toast.info { background: var(--accent); }
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--surface); border-radius: var(--r-xl); padding: 24px 28px;
+  width: 440px; max-width: 90vw; box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+}
+.modal-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--ink3); margin-bottom: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 500; color: var(--ink2); margin-bottom: 6px; display: block; }
+.form-input {
+  width: 100%; padding: 8px 12px; border: 1px solid var(--border2);
+  border-radius: var(--r-md); font-family: inherit; font-size: 13px;
+  color: var(--ink); outline: none; transition: border-color 0.15s;
+  background: var(--bg);
+}
+.form-input:focus { border-color: var(--accent); background: white; }
+.form-select { appearance: none; cursor: pointer; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.tag-select { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-check {
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  cursor: pointer; background: var(--bg); color: var(--ink2);
+  border: 1px solid var(--border2); transition: all 0.1s; user-select: none;
+}
+.tag-check.selected { background: var(--accent-bg); color: var(--accent); border-color: var(--accent); }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ===== SYNTAX COLORS ===== */
+.kw { color: #CBA6F7; }
+.fn { color: #89B4FA; }
+.str { color: #A6E3A1; }
+.cm { color: #585B70; }
+.num { color: #FAB387; }
+.op { color: #F38BA8; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">fk/</div>
+    <div>
+      <div class="logo-text">fkcoding<span>-note</span></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">工作区</div>
+    <div class="nav-item active" onclick="switchPage('dashboard', this)">
+      <div class="nav-icon">⊞</div> 仪表盘
+    </div>
+    <div class="nav-item" onclick="switchPage('tutorials', this)">
+      <div class="nav-icon">📚</div> 教程库
+      <div class="nav-badge">24</div>
+    </div>
+    <div class="nav-item" onclick="switchPage('editor', this)">
+      <div class="nav-icon">✏️</div> 编辑器
+    </div>
+    <div class="nav-item" onclick="switchPage('stats', this)">
+      <div class="nav-icon">📊</div> 数据统计
+    </div>
+  </div>
+
+  <div class="sidebar-section" style="margin-top:10px">
+    <div class="sidebar-label">分类</div>
+    <div class="nav-item" onclick="filterTag('前端', this)">
+      <div class="nav-icon">🌐</div> 前端开发
+    </div>
+    <div class="nav-item" onclick="filterTag('后端', this)">
+      <div class="nav-icon">⚙️</div> 后端工程
+    </div>
+    <div class="nav-item" onclick="filterTag('算法', this)">
+      <div class="nav-icon">🧮</div> 算法与数据结构
+    </div>
+    <div class="nav-item" onclick="filterTag('工具', this)">
+      <div class="nav-icon">🔧</div> 开发工具
+    </div>
+    <div class="nav-item" onclick="openModal()">
+      <div class="nav-icon" style="color:var(--ink3)">+</div>
+      <span style="color:var(--ink3); font-size:12px">新建分类</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="user-pill">
+      <div class="user-avatar">FK</div>
+      <div>
+        <div class="user-name">fkcoder</div>
+        <div class="user-plan">Pro · 182 篇笔记</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="breadcrumb">
+        <span>fkcoding-note</span>
+        <span class="breadcrumb-sep">/</span>
+        <b id="breadcrumb-title">仪表盘</b>
+      </div>
+      <div class="search-box">
+        <span style="color:var(--ink3);font-size:12px">🔍</span>
+        <input type="text" placeholder="搜索教程、笔记、标签..." id="searchInput" oninput="handleSearch(this.value)">
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn" onclick="showToast('已同步到云端 ☁️', 'success')">↑ 同步</button>
+      <button class="btn btn-accent" onclick="openModal()">+ 新建教程</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div class="page active" id="page-dashboard" style="max-width:1200px">
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">教程总数</div>
+        <div class="stat-num" id="cnt-tutorials">24</div>
+        <div class="stat-trend">↑ 本月新增 6 篇</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">笔记字数</div>
+        <div class="stat-num">182k</div>
+        <div class="stat-trend">↑ 较上月 +23%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">连续创作</div>
+        <div class="stat-num">🔥 14</div>
+        <div class="stat-sub">天不间断</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">完成率</div>
+        <div class="stat-num">78%</div>
+        <div class="stat-sub">19 / 24 篇已完成</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">最近编辑</div>
+            <div class="card-action" onclick="switchPage('tutorials', document.querySelector('[onclick*=tutorials]'))">查看全部 →</div>
+          </div>
+          <div class="tut-list" id="recent-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">创作热力图</div>
+            <span style="font-size:11px;color:var(--ink3)">近 90 天</span>
+          </div>
+          <div class="heatmap" id="heatmap"></div>
+          <div style="display:flex;gap:5px;align-items:center;margin-top:8px;justify-content:flex-end">
+            <span style="font-size:10px;color:var(--ink3)">少</span>
+            <div style="width:9px;height:9px;border-radius:2px;background:#EEF0EC"></div>
+            <div style="width:9px;height:9px;border-radius:2px;background:#BBF7D0"></div>
+            <div style="width:9px;height:9px;border-radius:2px;background:#4ADE80"></div>
+            <div style="width:9px;height:9px;border-radius:2px;background:#16A34A"></div>
+            <div style="width:9px;height:9px;border-radius:2px;background:#166534"></div>
+            <span style="font-size:10px;color:var(--ink3)">多</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">分类进度</div>
+          </div>
+          <div class="rings">
+            <div class="ring-row">
+              <span class="ring-label">前端开发</span>
+              <div class="ring-bar-bg"><div class="ring-bar-fill" style="width:85%;background:#3B82F6"></div></div>
+              <span class="ring-count">8/10</span>
+            </div>
+            <div class="ring-row">
+              <span class="ring-label">后端工程</span>
+              <div class="ring-bar-bg"><div class="ring-bar-fill" style="width:60%;background:#8B5CF6"></div></div>
+              <span class="ring-count">6/10</span>
+            </div>
+            <div class="ring-row">
+              <span class="ring-label">算法</span>
+              <div class="ring-bar-bg"><div class="ring-bar-fill" style="width:40%;background:#F59E0B"></div></div>
+              <span class="ring-count">2/5</span>
+            </div>
+            <div class="ring-row">
+              <span class="ring-label">工具链</span>
+              <div class="ring-bar-bg"><div class="ring-bar-fill" style="width:75%;background:#10B981"></div></div>
+              <span class="ring-count">3/4</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">待完成教程</div><div class="card-action" onclick="showToast('已筛选「草稿」状态', 'info')">筛选草稿</div></div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="tut-row" onclick="switchPage('editor', document.querySelector('[onclick*=editor]'))">
+              <div class="tut-icon" style="background:#FEF3C7">📝</div>
+              <div class="tut-info">
+                <div class="tut-name">React Server Components 深度解析</div>
+                <div class="tut-meta">草稿 · 上次编辑 2小时前</div>
+              </div>
+              <span class="tut-badge badge-amber">草稿</span>
+            </div>
+            <div class="tut-row" onclick="switchPage('editor', document.querySelector('[onclick*=editor]'))">
+              <div class="tut-icon" style="background:#EDE9FE">⚡</div>
+              <div class="tut-info">
+                <div class="tut-name">Vite 构建优化实战指南</div>
+                <div class="tut-meta">进行中 · 完成 40%</div>
+              </div>
+              <span class="tut-badge badge-purple">进行中</span>
+            </div>
+            <div class="tut-row" onclick="switchPage('editor', document.querySelector('[onclick*=editor]'))">
+              <div class="tut-icon" style="background:#DCFCE7">🐳</div>
+              <div class="tut-info">
+                <div class="tut-name">Docker Compose 项目部署</div>
+                <div class="tut-meta">草稿 · 上次编辑 3天前</div>
+              </div>
+              <span class="tut-badge badge-amber">草稿</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="background:linear-gradient(135deg,#EEF4FF,#F5F0FF)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:6px">💡 AI 写作助手</div>
+          <div style="font-size:12px;color:var(--ink2);margin-bottom:12px;line-height:1.7">
+            基于你的笔记内容，AI 可以帮你补全文章结构、生成代码示例、自动提炼知识点。
+          </div>
+          <button class="btn btn-accent" style="font-size:12px" onclick="showToast('AI 助手已就绪 🤖', 'info')">开始 AI 辅助创作</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TUTORIALS PAGE -->
+  <div class="page" id="page-tutorials">
+    <div class="filter-bar">
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterStatus('all', this)">全部</button>
+        <button class="filter-tab" onclick="filterStatus('published', this)">已发布</button>
+        <button class="filter-tab" onclick="filterStatus('draft', this)">草稿</button>
+        <button class="filter-tab" onclick="filterStatus('archived', this)">归档</button>
+      </div>
+      <button class="btn" onclick="showToast('按修改时间排序', 'info')">↕ 排序</button>
+      <button class="btn" onclick="showToast('导出所有教程为 ZIP', 'success')">⬇ 导出</button>
+    </div>
+    <div class="tut-grid" id="tut-grid"></div>
+  </div>
+
+  <!-- EDITOR PAGE -->
+  <div class="page" id="page-editor" style="padding:0;height:calc(100vh - 52px);overflow:hidden;display:none">
+    <div style="display:flex;height:100%;overflow:hidden">
+      <div class="editor-panel" style="flex:1">
+        <div class="editor-toolbar">
+          <button class="tb-btn" onclick="insertMd('**','**','粗体')"><b>B</b></button>
+          <button class="tb-btn" onclick="insertMd('*','*','斜体')"><i>I</i></button>
+          <button class="tb-btn" onclick="insertMd('`','`','代码')">⌨</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="insertHeading(1)">H1</button>
+          <button class="tb-btn" onclick="insertHeading(2)">H2</button>
+          <button class="tb-btn" onclick="insertHeading(3)">H3</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="insertCodeBlock()">{ }</button>
+          <button class="tb-btn" onclick="insertMd('\n> ','','引用')">❝</button>
+          <button class="tb-btn" onclick="insertTable()">⊞ 表格</button>
+          <button class="tb-btn" onclick="insertCallout()">💡 提示块</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="showToast('图片已上传', 'success')">🖼 图片</button>
+          <div style="margin-left:auto;display:flex;gap:4px">
+            <button class="tb-btn" onclick="showToast('已保存草稿 ✓', 'success')">💾 保存</button>
+            <button class="btn btn-accent" style="font-size:12px;padding:4px 12px" onclick="showToast('教程已发布 🎉', 'success')">发布</button>
+          </div>
+        </div>
+        <textarea class="editor-textarea" id="mdEditor" oninput="renderPreview()" spellcheck="false"></textarea>
+      </div>
+
+      <div class="preview-panel" style="flex:1">
+        <div class="preview-header">
+          <span>实时预览</span>
+          <div style="display:flex;gap:8px">
+            <button class="tb-btn" style="font-size:11px" onclick="showToast('已复制分享链接 🔗', 'info')">分享</button>
+            <button class="tb-btn" style="font-size:11px" onclick="showToast('已导出为 PDF', 'success')">导出 PDF</button>
+          </div>
+        </div>
+        <div class="preview-body">
+          <div class="md-preview" id="preview"></div>
+        </div>
+      </div>
+
+      <div class="toc-sidebar">
+        <div class="toc-title">目录</div>
+        <div id="toc-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS PAGE -->
+  <div class="page" id="page-stats" style="max-width:1100px">
+    <div class="stats-grid" style="margin-bottom:20px">
+      <div class="stat-card">
+        <div class="stat-label">本月字数</div>
+        <div class="stat-num">28.4k</div>
+        <div class="stat-trend">↑ 较上月 +18%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">新增教程</div>
+        <div class="stat-num">6</div>
+        <div class="stat-sub">4 已发布 · 2 草稿</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">代码块数量</div>
+        <div class="stat-num">143</div>
+        <div class="stat-trend">↑ 本月 +31 块</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">平均篇幅</div>
+        <div class="stat-num">7.6k</div>
+        <div class="stat-sub">字 / 篇</div>
+      </div>
+    </div>
+    <div class="stats-charts">
+      <div class="card">
+        <div class="card-head"><div class="card-title">月度创作量（近12月）</div></div>
+        <div class="chart-bars" id="monthly-chart"></div>
+        <div style="display:flex;gap:0" id="monthly-labels"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">分类分布</div></div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#EEF4FF" stroke-width="18"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#3B82F6" stroke-width="18"
+              stroke-dasharray="84 167" stroke-dashoffset="0" stroke-linecap="butt"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#8B5CF6" stroke-width="18"
+              stroke-dasharray="55 196" stroke-dashoffset="-84" stroke-linecap="butt"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#F59E0B" stroke-width="18"
+              stroke-dasharray="42 209" stroke-dashoffset="-139" stroke-linecap="butt"/>
+            <circle cx="55" cy="55" r="40" fill="none" stroke="#10B981" stroke-width="18"
+              stroke-dasharray="70 181" stroke-dashoffset="-181" stroke-linecap="butt"/>
+            <text x="55" y="58" text-anchor="middle" font-size="12" font-weight="600" fill="#1C1B18">182</text>
+          </svg>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#3B82F6"></div>前端开发 · 34%</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#8B5CF6"></div>后端工程 · 22%</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#F59E0B"></div>算法 · 17%</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2)"><div style="width:9px;height:9px;border-radius:2px;background:#10B981"></div>工具链 · 27%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div class="card-title">常用标签</div></div>
+      <div class="tag-cloud" id="tag-cloud"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-title">新建教程</div>
+    <div class="modal-sub">填写基本信息，稍后可在编辑器中完善内容</div>
+    <div class="form-group">
+      <label class="form-label">教程标题 *</label>
+      <input class="form-input" id="modal-title" placeholder="e.g. TypeScript 泛型完全指南" type="text">
+    </div>
+    <div class="form-group">
+      <label class="form-label">分类</label>
+      <select class="form-input form-select" id="modal-cat">
+        <option>前端开发</option>
+        <option>后端工程</option>
+        <option>算法与数据结构</option>
+        <option>开发工具</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">标签（多选）</label>
+      <div class="tag-select">
+        <div class="tag-check" onclick="toggleTag(this)">TypeScript</div>
+        <div class="tag-check" onclick="toggleTag(this)">React</div>
+        <div class="tag-check" onclick="toggleTag(this)">Node.js</div>
+        <div class="tag-check" onclick="toggleTag(this)">CSS</div>
+        <div class="tag-check" onclick="toggleTag(this)">Docker</div>
+        <div class="tag-check" onclick="toggleTag(this)">算法</div>
+        <div class="tag-check" onclick="toggleTag(this)">性能优化</div>
+        <div class="tag-check" onclick="toggleTag(this)">工程化</div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="createTutorial()">创建并开始编写</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ===== DATA =====
+const tutorials = [
+  { id:1, title:'React Hooks 完全指南', category:'前端开发', icon:'⚛️', color:'#DBEAFE', tags:['React','Hooks'], status:'published', date:'2小时前', words:8420, progress:100 },
+  { id:2, title:'TypeScript 泛型深度解析', category:'前端开发', icon:'🔷', color:'#DBEAFE', tags:['TypeScript'], status:'published', date:'1天前', words:6300, progress:100 },
+  { id:3, title:'Node.js 流式处理实战', category:'后端工程', icon:'🟢', color:'#DCFCE7', tags:['Node.js','Stream'], status:'published', date:'3天前', words:5100, progress:100 },
+  { id:4, title:'CSS Grid 布局终极指南', category:'前端开发', icon:'🎨', color:'#DBEAFE', tags:['CSS','布局'], status:'published', date:'5天前', words:7800, progress:100 },
+  { id:5, title:'React Server Components 深度解析', category:'前端开发', icon:'📝', color:'#FEF3C7', tags:['React','SSR'], status:'draft', date:'今天', words:2100, progress:40 },
+  { id:6, title:'Docker Compose 项目部署', category:'开发工具', icon:'🐳', color:'#DBEAFE', tags:['Docker','DevOps'], status:'draft', date:'3天前', words:1800, progress:35 },
+  { id:7, title:'图论算法精讲（BFS/DFS）', category:'算法与数据结构', icon:'🧮', color:'#FEF3C7', tags:['算法','图论'], status:'published', date:'1周前', words:9200, progress:100 },
+  { id:8, title:'Vite 构建优化实战', category:'开发工具', icon:'⚡', color:'#EDE9FE', tags:['Vite','工程化'], status:'draft', date:'2天前', words:3200, progress:60 },
+  { id:9, title:'PostgreSQL 索引优化', category:'后端工程', icon:'🗄️', color:'#DCFCE7', tags:['数据库','SQL'], status:'published', date:'2周前', words:5600, progress:100 },
+];
+
+const defaultMd = `# React Hooks 完全指南
+
+> 本文深入剖析 React Hooks 的设计理念与实战技巧，帮助你彻底掌握现代 React 开发。
+
+## 什么是 Hooks？
+
+React Hooks 是 React 16.8 引入的特性，允许你在**函数组件**中使用状态和其他 React 特性。
+
+## useState 基础用法
+
+\`\`\`tsx
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState<number>(0);
+  return (
+    <button onClick={() => setCount(c => c + 1)}>
+      点击次数: {count}
+    </button>
+  );
+}
+\`\`\`
+
+## useEffect 与副作用
+
+\`useEffect\` 用于处理副作用，例如数据请求、DOM 操作等。
+
+\`\`\`tsx
+useEffect(() => {
+  // 组件挂载时执行
+  fetchData();
+  return () => {
+    // 清理函数（组件卸载时执行）
+    cleanup();
+  };
+}, [dependency]); // 依赖数组
+\`\`\`
+
+> 💡 **最佳实践**：始终声明完整的依赖数组，避免陈旧闭包问题。
+
+## 自定义 Hook
+
+将逻辑封装为自定义 Hook，实现复用：
+
+\`\`\`tsx
+function useFetch<T>(url: string) {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(url)
+      .then(r => r.json())
+      .then(setData)
+      .finally(() => setLoading(false));
+  }, [url]);
+
+  return { data, loading };
+}
+\`\`\`
+
+## 常用 Hooks 对比
+
+| Hook | 用途 | 触发条件 |
+|------|------|----------|
+| useState | 本地状态管理 | setState 调用 |
+| useEffect | 副作用处理 | 依赖项变化 |
+| useMemo | 值缓存 | 依赖项变化 |
+| useCallback | 函数缓存 | 依赖项变化 |
+
+---
+
+## 性能优化
+
+- 使用 \`useMemo\` 缓存计算密集型结果
+- 使用 \`useCallback\` 稳定回调函数引用
+- 合理拆分组件粒度，避免不必要的重渲染
+`;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderHeatmap();
+  renderRecentList();
+  renderTutGrid(tutorials);
+  renderMonthlyChart();
+  renderTagCloud();
+  initEditor();
+});
+
+// ===== NAV =====
+function switchPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => {
+    p.style.display = 'none';
+    p.classList.remove('active');
+  });
+  const target = document.getElementById('page-' + page);
+  if (target) {
+    target.style.display = 'block';
+    target.classList.add('active');
+  }
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'仪表盘', tutorials:'教程库', editor:'编辑器', stats:'数据统计' };
+  document.getElementById('breadcrumb-title').textContent = titles[page] || page;
+}
+
+// Fix page display on init
+document.getElementById('page-dashboard').style.display = 'block';
+
+function filterTag(tag, el) {
+  switchPage('tutorials', el);
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = tutorials.filter(t => t.tags.some(tg => tg.includes(tag)) || t.category.includes(tag));
+  renderTutGrid(filtered.length ? filtered : tutorials);
+  showToast(`已筛选「${tag}」分类`, 'info');
+}
+
+// ===== HEATMAP =====
+function renderHeatmap() {
+  const hm = document.getElementById('heatmap');
+  const lvls = [0,0,1,0,2,1,3,0,0,2,4,1,0,2,3,1,0,3,2,1,4,0,1,3,2,0,0,1,2,3,4,1,2,0,3,1,2,4,3,0,0,1,2,3,0,4,1,2,3,0,0,1,2,3,4,2,1,0,3,2,0,1,4,2,3,1,0,2,3,4,1,0,2,3,1,0,4,2,1,3,0,0,2,1,3,4,2,1,0,3];
+  lvls.forEach((l, i) => {
+    const c = document.createElement('div');
+    c.className = 'hm-cell' + (l > 0 ? ' l'+l : '');
+    c.title = `${90-i}天前：记录了 ${l*2} 次`;
+    hm.appendChild(c);
+  });
+}
+
+// ===== RECENT LIST =====
+function renderRecentList() {
+  const el = document.getElementById('recent-list');
+  const icons = { '前端开发':'🌐', '后端工程':'⚙️', '算法与数据结构':'🧮', '开发工具':'🔧' };
+  const colors = { '前端开发':'#DBEAFE', '后端工程':'#DCFCE7', '算法与数据结构':'#FEF3C7', '开发工具':'#EDE9FE' };
+  const recent = tutorials.slice(0, 5);
+  el.innerHTML = recent.map(t => `
+    <div class="tut-row" onclick="openTutorial(${t.id})">
+      <div class="tut-icon" style="background:${colors[t.category]||'#F5F4F0'}">${icons[t.category]||'📄'}</div>
+      <div class="tut-info">
+        <div class="tut-name">${t.title}</div>
+        <div class="tut-meta">${t.category} · ${t.date} · ${(t.words/1000).toFixed(1)}k 字</div>
+      </div>
+      <span class="tut-badge ${t.status==='published'?'badge-green':'badge-amber'}">${t.status==='published'?'已发布':'草稿'}</span>
+    </div>
+  `).join('');
+}
+
+// ===== TUT GRID =====
+function renderTutGrid(list) {
+  const grid = document.getElementById('tut-grid');
+  grid.innerHTML = list.map(t => `
+    <div class="tut-card" onclick="openTutorial(${t.id})">
+      <div class="tut-card-icon">${t.icon}</div>
+      <div class="tut-card-title">${t.title}</div>
+      <div class="tut-card-desc">${t.category} · ${t.tags.join(' · ')}</div>
+      <div class="tut-card-footer">
+        <div class="tut-card-stats">
+          <span>📝 ${(t.words/1000).toFixed(1)}k 字</span>
+          <span>🕐 ${t.date}</span>
+        </div>
+        <span class="tut-badge ${t.status==='published'?'badge-green':'badge-amber'}">${t.status==='published'?'已发布':'草稿'}</span>
+      </div>
+      <div class="tut-progress"><div class="tut-progress-fill" style="width:${t.progress}%"></div></div>
+    </div>
+  `).join('');
+}
+
+function openTutorial(id) {
+  switchPage('editor', document.querySelectorAll('.nav-item')[2]);
+}
+
+// ===== FILTER =====
+function filterStatus(status, el) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = status === 'all' ? tutorials : tutorials.filter(t => t.status === status);
+  renderTutGrid(filtered);
+}
+
+// ===== EDITOR =====
+function initEditor() {
+  const ta = document.getElementById('mdEditor');
+  ta.value = defaultMd;
+  renderPreview();
+  ta.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      showToast('已自动保存 ✓', 'success');
+    }
+  });
+}
+
+function renderPreview() {
+  const md = document.getElementById('mdEditor').value;
+  document.getElementById('preview').innerHTML = parseMarkdown(md);
+  buildTOC();
+}
+
+function parseMarkdown(md) {
+  let html = md
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^> 💡 (.+)$/gm, '<div class="callout callout-tip">💡 $1</div>')
+    .replace(/^> ⚠️ (.+)$/gm, '<div class="callout callout-warn">⚠️ $1</div>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.+<\/li>\n?)+/g, s => '<ul>' + s + '</ul>');
+
+  // Code blocks
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+    const highlighted = highlightCode(code.trim());
+    return `<pre><button class="code-copy-btn" onclick="copyCode(this)">复制</button><span class="code-lang">${lang||'code'}</span><code>${highlighted}</code></pre>`;
+  });
+
+  // Tables
+  html = html.replace(/(\|.+\|\n)+/g, tableStr => {
+    const rows = tableStr.trim().split('\n').filter(r => !r.match(/^\|[-| ]+\|$/));
+    if (rows.length < 2) return tableStr;
+    const header = rows[0].split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+    const body = rows.slice(1).map(r =>
+      '<tr>' + r.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('') + '</tr>'
+    ).join('');
+    return `<table><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table>`;
+  });
+
+  // Paragraphs
+  html = html.replace(/^([^<\n].+)$/gm, '<p>$1</p>');
+
+  return html;
+}
+
+function highlightCode(code) {
+  return code
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\b(import|export|from|const|let|var|function|return|if|else|for|while|class|extends|interface|type|async|await|new|null|undefined|true|false|void)\b/g, '<span class="kw">$1</span>')
+    .replace(/\b([A-Z][a-zA-Z]*)\b/g, '<span class="fn">$1</span>')
+    .replace(/(["'`])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="str">$1$2$1</span>')
+    .replace(/\/\/.+$/gm, '<span class="cm">$&</span>')
+    .replace(/\b(\d+)\b/g, '<span class="num">$1</span>');
+}
+
+function buildTOC() {
+  const toc = document.getElementById('toc-list');
+  const preview = document.getElementById('preview');
+  const headings = preview.querySelectorAll('h1,h2,h3');
+  toc.innerHTML = Array.from(headings).map((h, i) => {
+    const level = h.tagName.toLowerCase();
+    h.id = 'heading-' + i;
+    return `<div class="toc-item ${level}" onclick="document.getElementById('heading-${i}').scrollIntoView({behavior:'smooth'})">${h.textContent}</div>`;
+  }).join('');
+  if (toc.children[0]) toc.children[0].classList.add('active');
+}
+
+function insertMd(before, after, placeholder) {
+  const ta = document.getElementById('mdEditor');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end) || placeholder;
+  ta.value = ta.value.substring(0, start) + before + sel + after + ta.value.substring(end);
+  ta.focus();
+  renderPreview();
+}
+
+function insertHeading(level) {
+  const ta = document.getElementById('mdEditor');
+  const pos = ta.selectionStart;
+  const prefix = '#'.repeat(level) + ' ';
+  ta.value = ta.value.substring(0, pos) + '\n' + prefix + '标题\n' + ta.value.substring(pos);
+  renderPreview();
+}
+
+function insertCodeBlock() {
+  const ta = document.getElementById('mdEditor');
+  const pos = ta.selectionStart;
+  const block = '\n```tsx\n// 在这里输入代码\n```\n';
+  ta.value = ta.value.substring(0, pos) + block + ta.value.substring(pos);
+  renderPreview();
+}
+
+function insertTable() {
+  const ta = document.getElementById('mdEditor');
+  const pos = ta.selectionStart;
+  const tbl = '\n| 列1 | 列2 | 列3 |\n|-----|-----|-----|\n| 内容 | 内容 | 内容 |\n';
+  ta.value = ta.value.substring(0, pos) + tbl + ta.value.substring(pos);
+  renderPreview();
+  showToast('表格已插入', 'info');
+}
+
+function insertCallout() {
+  const ta = document.getElementById('mdEditor');
+  const pos = ta.selectionStart;
+  ta.value = ta.value.substring(0, pos) + '\n> 💡 在这里输入提示内容\n' + ta.value.substring(pos);
+  renderPreview();
+}
+
+function copyCode(btn) {
+  const code = btn.nextElementSibling.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).catch(()=>{});
+  btn.textContent = '✓ 已复制';
+  setTimeout(() => btn.textContent = '复制', 2000);
+}
+
+// ===== MONTHLY CHART =====
+function renderMonthlyChart() {
+  const vals = [12,8,15,6,18,11,9,22,16,14,20,28];
+  const months = ['5月','6月','7月','8月','9月','10月','11月','12月','1月','2月','3月','4月'];
+  const chart = document.getElementById('monthly-chart');
+  const labels = document.getElementById('monthly-labels');
+  const max = Math.max(...vals);
+  chart.innerHTML = vals.map((v, i) => `
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center">
+      <div class="chart-bar" style="height:${Math.round(v/max*100)}%;width:100%;background:${i===11?'var(--accent)':'var(--accent-bg)'}">
+        <div class="chart-bar-val">${v}</div>
+      </div>
+    </div>
+  `).join('');
+  labels.innerHTML = months.map(m => `<div class="chart-bar-label" style="flex:1">${m}</div>`).join('');
+}
+
+// ===== TAG CLOUD =====
+function renderTagCloud() {
+  const tags = [
+    { name:'React', count:34, color:'#DBEAFE', text:'#1D4ED8' },
+    { name:'TypeScript', count:28, color:'#EDE9FE', text:'#6D28D9' },
+    { name:'Node.js', count:22, color:'#DCFCE7', text:'#15803D' },
+    { name:'CSS', count:19, color:'#DBEAFE', text:'#1D4ED8' },
+    { name:'算法', count:18, color:'#FEF3C7', text:'#92400E' },
+    { name:'Docker', count:14, color:'#DBEAFE', text:'#1D4ED8' },
+    { name:'性能优化', count:12, color:'#DBEAFE', text:'#1D4ED8' },
+    { name:'工程化', count:11, color:'#EDE9FE', text:'#6D28D9' },
+    { name:'数据库', count:9, color:'#DCFCE7', text:'#15803D' },
+    { name:'DevOps', count:7, color:'#FEE2E2', text:'#B91C1C' },
+    { name:'测试', count:6, color:'#FEF3C7', text:'#92400E' },
+    { name:'Vue', count:5, color:'#DCFCE7', text:'#15803D' },
+  ];
+  const cloud = document.getElementById('tag-cloud');
+  cloud.innerHTML = tags.map(t => `
+    <div class="tag-pill" style="background:${t.color};color:${t.text};border-color:${t.color}"
+      onclick="showToast('筛选标签：${t.name}（${t.count}篇）', 'info')"
+      title="${t.count} 篇教程">
+      ${t.name} · ${t.count}
+    </div>
+  `).join('');
+}
+
+// ===== SEARCH =====
+function handleSearch(val) {
+  if (!val) return;
+  const results = tutorials.filter(t =>
+    t.title.includes(val) || t.tags.some(tg => tg.includes(val)) || t.category.includes(val)
+  );
+  if (results.length) {
+    switchPage('tutorials', document.querySelectorAll('.nav-item')[1]);
+    renderTutGrid(results);
+    showToast(`找到 ${results.length} 篇相关教程`, 'info');
+  }
+}
+
+// ===== MODAL =====
+function openModal() {
+  document.getElementById('modal').classList.add('show');
+  setTimeout(() => document.getElementById('modal-title').focus(), 100);
+}
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+function toggleTag(el) { el.classList.toggle('selected'); }
+function createTutorial() {
+  const title = document.getElementById('modal-title').value.trim();
+  if (!title) { showToast('请输入教程标题', 'info'); return; }
+  closeModal();
+  showToast(`「${title}」已创建，正在打开编辑器…`, 'success');
+  document.getElementById('cnt-tutorials').textContent = parseInt(document.getElementById('cnt-tutorials').textContent) + 1;
+  setTimeout(() => switchPage('editor', document.querySelectorAll('.nav-item')[2]), 800);
+}
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// ===== TOAST =====
+function showToast(msg, type = '') {
+  const tc = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  tc.appendChild(t);
+  requestAnimationFrame(() => { requestAnimationFrame(() => t.classList.add('show')); });
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 2800);
+}
+</script>
+</body>
+</html>
